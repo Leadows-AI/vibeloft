@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Vibeloft">
+  <rect width="120" height="120" rx="28" fill="#14171C"/>
+  <path d="M18 44 L60 18 L102 44" fill="none" stroke="#F6F1E7" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="24" y="52" width="20" height="20" rx="4" fill="#4F8A5B"/>
+  <rect x="50" y="52" width="20" height="20" rx="4" fill="#E8A23B"/>
+  <rect x="76" y="52" width="20" height="20" rx="4" fill="#4F8A5B"/>
+  <rect x="24" y="80" width="20" height="20" rx="4" fill="#4F8A5B"/>
+  <rect x="50" y="80" width="20" height="20" rx="4" fill="#4F8A5B"/>
+  <rect x="76" y="80" width="20" height="20" rx="4" fill="#4F8A5B"/>
+</svg>

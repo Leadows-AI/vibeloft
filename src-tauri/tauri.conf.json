@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Vibeloft",
+  "version": "1.0.0",
+  "identifier": "com.leadows.vibeloft",
+  "build": {
+    "beforeDevCommand": "npx vite --config vite.tauri.config.ts",
+    "devUrl": "http://localhost:5199",
+    "beforeBuildCommand": "npx vite build --config vite.tauri.config.ts",
+    "frontendDist": "../out/tauri"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Vibeloft",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 640
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "../build/icon.png",
+      "../build/icon.ico"
+    ],
+    "createUpdaterArtifacts": true,
+    "publisher": "Leadows Technologies",
+    "copyright": "Copyright © 2026 Leadows Technologies. Licensed under the Apache License 2.0.",
+    "license": "Apache-2.0"
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhDODFEN0IxNzU5QzFFRTMKUldUakhweDFzZGVCak1VcUdGNTgzNWVDc2RhT1dmMUljMDJpd3k3WC9EVC9QS1hTMS9HTGpuWlkK",
+      "endpoints": [
+        "https://github.com/Leadows-AI/vibeloft/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}
