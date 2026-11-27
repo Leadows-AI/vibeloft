@@ -4,7 +4,7 @@ Thanks for helping. Bug reports, ideas and pull requests are all welcome.
 
 ## Issues
 
-Search the existing issues first, then use the **Bug report** or **Feature request** form. Security problems go to [private reporting](SECURITY.md), not issues.
+Questions and open-ended ideas go to [Discussions](https://github.com/Leadows-AI/vibeloft/discussions). For bugs and concrete requests, search the existing issues first, then use the **Bug report** or **Feature request** form. Security problems go to [private reporting](SECURITY.md), not issues.
 
 Looking for something to work on? Try issues labelled [`good first issue`](https://github.com/Leadows-AI/vibeloft/labels/good%20first%20issue) or [`help wanted`](https://github.com/Leadows-AI/vibeloft/labels/help%20wanted). For anything bigger than a small fix, comment on the issue (or open one) first, so we agree on the approach before you write the code.
 
