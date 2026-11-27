@@ -69,11 +69,11 @@ export const TOPICS: HelpTopic[] = [
     title: 'Add a project',
     screens: ['dashboard'],
     keywords: 'new project create import clone github folder template',
-    body: `Click **+** next to **Projects** in the sidebar. Choose where it comes from:
-- **Folder on this computer**: pick an existing code folder.
-- **GitHub**: pick one of your repos; Vibeloft clones it into your projects folder.
-- **New from template**: a ready-to-run **Web app** (React + Express) or **Mobile app** (Expo), with a first commit and, optionally, a private GitHub repo.
-Give it a customer and a type (web or mobile), then **Save**.`
+    body: `Click **+** next to **Projects** in the sidebar. Choose where the code is:
+- **On this computer**: pick an existing code folder. Vibeloft detects the type, tech stack and GitHub repository (change them under **Detected settings**).
+- **On GitHub**: search every repo you can reach, including your organizations', or paste a GitHub link, then **Clone and add**. If it's already cloned in that folder, that copy is used.
+- **Start fresh**: a ready-to-run **Web app** (React + Express) or **Mobile app** (Expo), with a first commit and, optionally, a private GitHub repo.
+Optionally pick a customer. If something required is missing, the reason shows next to the button.`
   },
   {
     id: 'switch-projects',
