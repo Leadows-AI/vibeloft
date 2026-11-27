@@ -47,17 +47,54 @@ fn parse(text: &str) -> Res {
 }
 
 fn list_repos(owner: Option<String>) -> Res {
-    let mut args = vec!["repo".to_string(), "list".into()];
-    args.extend(owner);
-    args.extend(["--limit", "200", "--json", "nameWithOwner,description,isPrivate,updatedAt"].map(String::from));
-    parse(&run("gh", &args, None, None)?)
+    if let Some(owner) = owner {
+        return parse(&gh(&["repo", "list", &owner, "--limit", "200", "--json", "nameWithOwner,description,isPrivate,updatedAt"])?);
+    }
+    // Everything the user can reach: their own repos, collaborations and every
+    // organization's repos (`gh repo list` alone only shows their own).
+    // Pages are fetched five at a time in parallel; `--paginate` is ~5x slower.
+    const BATCH: usize = 5;
+    let mut all: Vec<Value> = vec![];
+    for start in (1..).step_by(BATCH) {
+        let pages: Vec<Result<String, String>> = std::thread::scope(|s| {
+            let handles: Vec<_> = (start..start + BATCH)
+                .map(|page| {
+                    s.spawn(move || {
+                        let path = format!("user/repos?per_page=100&page={page}&sort=pushed&affiliation=owner,collaborator,organization_member");
+                        gh(&["api", &path, "--jq", ".[] | {nameWithOwner: .full_name, description, isPrivate: .private, updatedAt: .pushed_at}"])
+                    })
+                })
+                .collect();
+            handles.into_iter().map(|h| h.join().unwrap_or_else(|_| Err("gh crashed".into()))).collect()
+        });
+        let mut last = false;
+        for page in pages {
+            let rows = json_lines(&page?);
+            last |= rows.len() < 100;
+            all.extend(rows);
+        }
+        if last {
+            break;
+        }
+    }
+    let mut seen = std::collections::HashSet::new();
+    all.retain(|r| seen.insert(r["nameWithOwner"].as_str().unwrap_or_default().to_lowercase()));
+    Ok(Value::Array(all))
 }
 
 fn clone_repo(repo: &str, parent_dir: &str) -> Res {
-    let name = repo.split('/').nth(1).ok_or("Invalid repository name.")?;
+    if !valid_repo(repo) {
+        return Err("Invalid repository name.".into());
+    }
+    let name = repo.split('/').nth(1).unwrap_or_default();
     let dest = Path::new(parent_dir).join(name);
     if dest.exists() {
-        return Err(format!("Folder already exists: {}", dest.display()));
+        // Already cloned there: just use it.
+        let origin = run("git", &["remote", "get-url", "origin"], Some(&dest), None).ok().and_then(|u| crate::git::parse_github_slug(&u));
+        if origin.is_some_and(|o| o.eq_ignore_ascii_case(repo)) {
+            return Ok(Value::String(dest.to_string_lossy().into_owned()));
+        }
+        return Err(format!("{} already exists and isn't a clone of {repo}. Choose another folder to clone into.", dest.display()));
     }
     let d = dest.to_string_lossy().into_owned();
     gh(&["repo", "clone", repo, &d])?;
