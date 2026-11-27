@@ -1,6 +1,6 @@
 {
   "name": "vibeloft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Vibeloft, a desktop workspace for Claude Code projects.",
   "scripts": {
     "dev": "tauri dev",
