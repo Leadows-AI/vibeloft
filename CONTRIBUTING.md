@@ -24,4 +24,8 @@ By submitting a pull request you agree that your contribution is licensed under 
 
 ## Releases (maintainers)
 
-On an up-to-date, pushed `main`, run `npm run release` (or `NOTES="- …" npm run release` for your own notes). It builds the installer and the portable `.exe`, signs the update with the release key, and creates the GitHub release `v<version>` on that commit with `latest.json` for the updater and release notes from the pull requests merged since the last release. The signing key is not in this repository.
+1. Merge a pull request that raises the version (title it `Release x.y.z`; it's left out of the release notes).
+2. **Actions › Release › Run workflow** on `main`, optionally with your own notes.
+3. Approve the run when GitHub asks: the `release` environment holds the updater signing key and needs an approval.
+
+The workflow builds the installer and the portable `.exe` on Windows, signs the update, and creates the GitHub release `v<version>` on that commit with `latest.json` for the updater and release notes from the pull requests merged since the last release. It stops without publishing if the version numbers differ or that version is already released. The signing key is never in this repository; `npm run release` does the same locally for a maintainer who has the key in `~/.tauri/vibeloft-rust.key`.

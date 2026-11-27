@@ -11,8 +11,9 @@
 //   - the Windows installer and the portable .exe
 //   - latest.json, the signed manifest Vibeloft's updater reads
 // Release notes list the pull requests merged since the previous release.
-// Uses your GitHub CLI login (gh auth login) and the updater signing key in
-// ~/.tauri/vibeloft-rust.key.
+// Normally run by the Release workflow (.github/workflows/release.yml), which
+// passes the signing key and a GitHub token in the environment. Run locally, it
+// uses your GitHub CLI login (gh auth login) and the key in ~/.tauri/vibeloft-rust.key.
 
 import { execFileSync, execSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -55,7 +56,8 @@ if (!git('branch', '-r', '--contains', head)) fail('Push this commit to GitHub f
 // The updater only installs builds signed with this key (its public half is in tauri.conf.json).
 // Keep a backup: without it, installed copies can never be updated again.
 const keyFile = join(homedir(), '.tauri', 'vibeloft-rust.key')
-if (!existsSync(keyFile)) fail(`The updater signing key is missing: ${keyFile}`)
+const key = process.env.TAURI_SIGNING_PRIVATE_KEY || (existsSync(keyFile) ? readFileSync(keyFile, 'utf8') : '')
+if (!key) fail(`The updater signing key is missing: set TAURI_SIGNING_PRIVATE_KEY or put it in ${keyFile}`)
 
 let previous = ''
 try {
@@ -81,7 +83,7 @@ const notes = custom || (changes.length ? changes : ['Maintenance and small fixe
 console.log(`\nRelease notes for ${version}:\n${notes}\n`)
 
 console.log(`Building and publishing Vibeloft ${version} to ${repo}…\n`)
-const signing = { ...env, TAURI_SIGNING_PRIVATE_KEY: readFileSync(keyFile, 'utf8'), TAURI_SIGNING_PRIVATE_KEY_PASSWORD: '' }
+const signing = { ...env, TAURI_SIGNING_PRIVATE_KEY: key, TAURI_SIGNING_PRIVATE_KEY_PASSWORD: '' }
 execSync('npx tauri build', { stdio: 'inherit', env: signing })
 const built = `src-tauri/target/release/bundle/nsis/Vibeloft_${version}_x64-setup.exe`
 if (!existsSync(built) || !existsSync(`${built}.sig`)) fail(`The build didn't produce ${built} and its .sig. Nothing was published.`)
