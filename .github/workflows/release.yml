@@ -1,0 +1,43 @@
+name: Release
+
+# Publishes the version in package.json from main: Actions › Release › Run workflow.
+# The "release" environment holds the updater signing key and needs an approval
+# before the job starts. Raise the version in a pull request first.
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: Release notes (optional; default lists the pull requests merged since the last release)
+        required: false
+
+permissions:
+  contents: write # create the tag and the release
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, sign and publish
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tags and history, for the release notes
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - run: node scripts/release.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          NOTES: ${{ inputs.notes }}
