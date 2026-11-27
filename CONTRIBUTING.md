@@ -4,7 +4,9 @@ Thanks for helping. Bug reports, ideas and pull requests are all welcome.
 
 ## Issues
 
-Search the existing issues first. For a bug, say what you did, what you expected, what happened, and your Vibeloft and Windows versions (Settings › About & updates).
+Search the existing issues first, then use the **Bug report** or **Feature request** form. Security problems go to [private reporting](SECURITY.md), not issues.
+
+Looking for something to work on? Try issues labelled [`good first issue`](https://github.com/Leadows-AI/vibeloft/labels/good%20first%20issue) or [`help wanted`](https://github.com/Leadows-AI/vibeloft/labels/help%20wanted). For anything bigger than a small fix, comment on the issue (or open one) first, so we agree on the approach before you write the code.
 
 ## Pull requests
 
@@ -15,7 +17,8 @@ Search the existing issues first. For a bug, say what you did, what you expected
    npm run typecheck
    cd src-tauri && cargo test
    ```
-4. Version: a pull request that adds a feature raises the minor version, a fix raises the patch version (`npm version minor --no-git-tag-version`, and the same number in `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`).
+4. Version: a pull request that adds a feature raises the minor version, a fix raises the patch version (`npm version minor --no-git-tag-version`, and the same number in `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`). Docs and CI changes don't need one.
+5. Write the title as a release note ("Add split view to terminals"): pull requests are squash-merged, so the title becomes the commit on `main` and a line in the release notes. CI must pass before merging.
 
 By submitting a pull request you agree that your contribution is licensed under the [Apache License 2.0](LICENSE), as described in section 5 of the license.
 
